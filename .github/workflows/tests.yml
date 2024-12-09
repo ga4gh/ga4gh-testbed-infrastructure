@@ -79,19 +79,26 @@ jobs:
         context: .
         builder: ${{ steps.buildx.outputs.name }}
         push: true
-        tags: ga4gh/ga4gh-testbed-api:${{ env.VERSION }}
-        build-args: VERSION=${{ env.VERSION }}
+        tags: ga4gh/ga4gh-testbed-api:${{ env.version }}
+        build-args: VERSION=${{ env.version }}
         cache-from: type=gha #GitHub Actions Cache Exporter
         cache-to: type=gha,mode=max
 
     - name: Start Services
       run: docker compose up --build -d
 
+    - name: Wait for API to be ready
+      run: |
+        curl -o wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
+        chmod +x wait-for-it.sh
+        ./wait-for-it.sh localhost:4500 --timeout=300 --strict -- echo "Service is ready"
+
     - name: Service Health Check with Temp Container
       run: |
         NETWORK_NAME=$(docker network ls --filter "name=testbed-api" --format "{{.Name}}")
         docker run --rm --network ${NETWORK_NAME} curlimages/curl:7.81.0 curl -sv  http://testbed-api:4500/reports
-    
+
+
     # - name: Setup upterm session # Using Github - SSH for debugging
     #   uses: lhotari/action-upterm@v1
     #   with:
