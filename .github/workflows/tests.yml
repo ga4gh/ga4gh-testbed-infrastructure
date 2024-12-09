@@ -116,7 +116,7 @@ jobs:
     - name: Service Health Check
       uses: jtalk/url-health-check-action@v2
       with:
-        url: http://localhost:4500/reports
+        url: http://testbed-api:4500/reports
         follow-redirect: false
         max-attempts: 6
         retry-delay: 10s
