@@ -46,8 +46,8 @@ jobs:
   Docker-Test:
     runs-on: ubuntu-latest
     env:
-      POSTGRES_USER: pgtest
-      POSTGRES_PASSWORD: pgtest
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pgpass
       POSTGRES_DB: ga4gh_testbed_api_db
       SPRING_APPLICATION_JSON: '{"server":{"address":"0.0.0.0","port":4500}}' 
 
