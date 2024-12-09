@@ -91,10 +91,12 @@ jobs:
       run: |
         curl -o wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
         chmod +x wait-for-it.sh
-        ./wait-for-it.sh localhost:4500/reports --timeout=300 --strict -- echo "Service is ready"
+        ./wait-for-it.sh localhost:4500 --timeout=300 --strict -- echo "Service is ready"
 
     - name: Service Health Check with Temp Container
       run: |
+        echo "Waiting for 10 seconds before running health check"
+        sleep 10
         NETWORK_NAME=$(docker network ls --filter "name=testbed-api" --format "{{.Name}}")
         docker run --rm --network ${NETWORK_NAME} curlimages/curl:7.81.0 curl -sv  http://testbed-api:4500/reports
 
