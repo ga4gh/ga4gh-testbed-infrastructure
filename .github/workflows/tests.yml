@@ -60,67 +60,67 @@ jobs:
       with:
         gradle-version: 7.3.3
 
-    # - name: Setup Docker Buildx
-    #   id: buildx
-    #   uses: docker/setup-buildx-action@v1
+    - name: Setup Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v1
 
-    # - name: Docker Hub Login
-    #   uses: docker/login-action@v1
-    #   with: 
-    #     username: ${{ secrets.DOCKER_HUB_USERNAME }}
-    #     password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+    - name: Docker Hub Login
+      uses: docker/login-action@v1
+      with: 
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
     - name: Set Docker Image Version
       run: source ci/set-docker-image-version.sh && echo "VERSION=${DOCKER_IMG_VER}" >> $GITHUB_ENV
     
-    # - name: Build Docker Image
-    #   uses: docker/build-push-action@v2
-    #   with:
-    #     context: .
-    #     builder: ${{ steps.buildx.outputs.name }}
-    #     push: true
-    #     tags: ga4gh/ga4gh-testbed-api:${{ env.version }}
-    #     build-args: VERSION=${{ env.version }}
-    #     cache-from: type=gha #GitHub Actions Cache Exporter
-    #     cache-to: type=gha,mode=max
+    - name: Build Docker Image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        builder: ${{ steps.buildx.outputs.name }}
+        push: true
+        tags: ga4gh/ga4gh-testbed-api:${{ env.version }}
+        build-args: VERSION=${{ env.version }}
+        cache-from: type=gha #GitHub Actions Cache Exporter
+        cache-to: type=gha,mode=max
 
     - name: Start Services
       run: docker compose up --build -d
 
-    - name: Wait for API to be ready
-      run: |
-        curl -o wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
-        chmod +x wait-for-it.sh
-        ./wait-for-it.sh localhost:4500 --timeout=300 --strict -- echo "Service is ready"
+    # - name: Wait for API to be ready
+    #   run: |
+    #     curl -o wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
+    #     chmod +x wait-for-it.sh
+    #     ./wait-for-it.sh localhost:4500 --timeout=300 --strict -- echo "Service is ready"
 
-    - name: Show Docker Compose logs
-      run: docker compose logs testbed-api
+    # - name: Show Docker Compose logs
+    #   run: docker compose logs testbed-api
     
-    - name: List running containers
-      run: |
-        echo "Waiting for 10 seconds before checking running containers..."
-        sleep 10
-        docker container ls
+    # - name: List running containers
+    #   run: |
+    #     echo "Waiting for 10 seconds before checking running containers..."
+    #     sleep 10
+    #     docker container ls
 
-    - name: Show Docker Compose logs again......
-      run: docker compose logs testbed-api
+    # - name: Show Docker Compose logs again......
+    #   run: docker compose logs testbed-api
     
-    - name: List ports
-      run: docker compose exec testbed-api netstat -tuln
+    # - name: List ports
+    #   run: docker compose exec testbed-api netstat -tuln
 
-    - name: Service Health Check with Temp Container
-      run: |
-        NETWORK_NAME=$(docker network ls --filter "name=testbed-api" --format "{{.Name}}")
-        docker run --rm --network ${NETWORK_NAME} curlimages/curl:7.81.0 curl -sv  http://testbed-api:4500/reports
+    # - name: Service Health Check with Temp Container
+    #   run: |
+    #     NETWORK_NAME=$(docker network ls --filter "name=testbed-api" --format "{{.Name}}")
+    #     docker run --rm --network ${NETWORK_NAME} curlimages/curl:7.81.0 curl -sv  http://testbed-api:4500/reports
 
-    # - name: Service Health Check
-    #   uses: jtalk/url-health-check-action@v2
-    #   with:
-    #     url: http://localhost:4500/reports
-    #     follow-redirect: false
-    #     max-attempts: 6
-    #     retry-delay: 10s
-    #     retry-all: true
+    - name: Service Health Check
+      uses: jtalk/url-health-check-action@v2
+      with:
+        url: http://localhost:4500/reports
+        follow-redirect: false
+        max-attempts: 6
+        retry-delay: 10s
+        retry-all: true
 
     
 
