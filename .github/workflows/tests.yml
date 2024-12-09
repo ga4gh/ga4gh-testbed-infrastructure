@@ -87,43 +87,11 @@ jobs:
     - name: Start Services
       run: docker compose up --build -d
 
-    # - name: Wait for API to be ready
-    #   run: |
-    #     curl -o wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
-    #     chmod +x wait-for-it.sh
-    #     ./wait-for-it.sh localhost:4500 --timeout=300 --strict -- echo "Service is ready"
-
-    # - name: Show Docker Compose logs
-    #   run: docker compose logs testbed-api
+    - name: Service Health Check with Temp Container
+      run: |
+        NETWORK_NAME=$(docker network ls --filter "name=testbed-api" --format "{{.Name}}")
+        docker run --rm --network ${NETWORK_NAME} curlimages/curl:7.81.0 curl -sv  http://testbed-api:4500/reports
     
-    # - name: List running containers
-    #   run: |
-    #     echo "Waiting for 10 seconds before checking running containers..."
-    #     sleep 10
-    #     docker container ls
-
-    # - name: Show Docker Compose logs again......
-    #   run: docker compose logs testbed-api
-    
-    # - name: List ports
-    #   run: docker compose exec testbed-api netstat -tuln
-
-    # - name: Service Health Check with Temp Container
-    #   run: |
-    #     NETWORK_NAME=$(docker network ls --filter "name=testbed-api" --format "{{.Name}}")
-    #     docker run --rm --network ${NETWORK_NAME} curlimages/curl:7.81.0 curl -sv  http://testbed-api:4500/reports
-
-    - name: Service Health Check
-      uses: jtalk/url-health-check-action@v2
-      with:
-        url: http://testbed-api:4500/reports
-        follow-redirect: false
-        max-attempts: 6
-        retry-delay: 10s
-        retry-all: true
-
-    
-
     # - name: Setup upterm session # Using Github - SSH for debugging
     #   uses: lhotari/action-upterm@v1
     #   with:
