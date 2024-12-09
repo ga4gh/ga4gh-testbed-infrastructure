@@ -79,8 +79,8 @@ jobs:
         context: .
         builder: ${{ steps.buildx.outputs.name }}
         push: true
-        tags: ga4gh/ga4gh-testbed-api:${{ env.version }}
-        build-args: VERSION=${{ env.version }}
+        tags: ga4gh/ga4gh-testbed-api:${{ env.VERSION }}
+        build-args: VERSION=${{ env.VERSION }}
         cache-from: type=gha #GitHub Actions Cache Exporter
         cache-to: type=gha,mode=max
 
