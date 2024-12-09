@@ -97,7 +97,10 @@ jobs:
       run: docker compose logs testbed-api
     
     - name: List running containers
-      run: docker container ls
+      run: |
+        echo "Waiting for 10 seconds before checking running containers..."
+        sleep 10
+        docker container ls
     
     - name: List ports
       run: docker compose exec testbed-api netstat -tuln
