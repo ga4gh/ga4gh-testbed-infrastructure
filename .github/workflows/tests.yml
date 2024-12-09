@@ -79,8 +79,8 @@ jobs:
         context: .
         builder: ${{ steps.buildx.outputs.name }}
         push: true
-        tags: ga4gh/ga4gh-testbed-api:${{ env.version }}
-        build-args: VERSION=${{ env.version }}
+        tags: ga4gh/ga4gh-testbed-api:${{ env.VERSION }}
+        build-args: VERSION=${{ env.VERSION }}
         cache-from: type=gha #GitHub Actions Cache Exporter
         cache-to: type=gha,mode=max
 
@@ -97,7 +97,6 @@ jobs:
       run: |
         NETWORK_NAME=$(docker network ls --filter "name=testbed-api" --format "{{.Name}}")
         docker run --rm --network ${NETWORK_NAME} curlimages/curl:7.81.0 curl -sv  http://testbed-api:4500/reports
-
 
     # - name: Setup upterm session # Using Github - SSH for debugging
     #   uses: lhotari/action-upterm@v1
