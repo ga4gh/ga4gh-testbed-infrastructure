@@ -2,6 +2,7 @@ package org.ga4gh.testbed.api.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import org.ga4gh.testbed.api.model.Report;
@@ -32,8 +33,17 @@ public class Reports {
 
     @GetMapping
     @JsonView(SerializeView.ReportSimple.class)
-    public List<Report> getReports() {
-        return hibernateUtil.listEntityObject(Report.class);
+    public List<Report> getReports(
+        @RequestParam(name = "listPrivate", required = false, defaultValue = "false") Boolean listPrivate
+    ) {
+        if (listPrivate) {
+            return hibernateUtil.listEntityObject(Report.class);
+        }
+        
+        return hibernateUtil.listEntityObject(Report.class)
+                            .stream()
+                            .filter(r -> !r.getIsPrivate())
+                            .collect(Collectors.toList());
     }
 
     @GetMapping(path = "/getReportsByTestbed/")

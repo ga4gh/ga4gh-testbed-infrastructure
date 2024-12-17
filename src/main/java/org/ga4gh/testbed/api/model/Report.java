@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vladmihalcea.hibernate.type.json.JsonType;
 import org.ga4gh.starterkit.common.constant.DateTimeConstants;
 import org.ga4gh.starterkit.common.hibernate.HibernateEntity;
@@ -103,6 +104,11 @@ public class Report implements HibernateEntity<String> {
     @JoinColumn(name = "testbed", referencedColumnName = "id")
     @JsonView(SerializeView.ReportSimple.class)
     private Testbed testbed;
+
+    @JsonProperty("private")
+    @Column(name = "private", nullable = false)
+    @JsonView(SerializeView.Always.class)
+    private Boolean isPrivate;
 
     public void loadRelations() {
         Hibernate.initialize(getPhases());

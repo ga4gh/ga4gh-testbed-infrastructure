@@ -1,0 +1,2 @@
+ALTER TABLE report ADD private BOOLEAN NOT NULL DEFAULT FALSE;
+UPDATE report SET private = FALSE;

@@ -61,4 +61,5 @@ COPY src/test/resources/ src/test/resources/
 
 RUN chmod 666 ga4gh-testbed-api.dev.db
 
-ENTRYPOINT ["java", "-jar", "ga4gh-testbed-api.jar"]
+EXPOSE 4500
+ENTRYPOINT ["java", "-jar", "ga4gh-testbed-api.jar", "--server.address=0.0.0.0", "--server.port=4500"]

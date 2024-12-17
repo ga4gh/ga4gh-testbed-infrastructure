@@ -21,7 +21,7 @@ plugins {
 
 archivesBaseName = 'ga4gh-testbed-api'
 group 'org.ga4gh'
-version '0.2.0-connect-24'
+version '0.2.1'
 
 repositories {
     // Use jcenter for resolving dependencies.
